@@ -1,0 +1,18 @@
+# Dev image with Node and Vite
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Faster installs with pnpm optional; sticking to npm for simplicity
+COPY package*.json ./
+RUN npm ci
+
+# Copy the rest (will be overridden by volume in compose)
+COPY . .
+
+# Env to force polling for hot reload (esp. on macOS/Windows)
+ENV CHOKIDAR_USEPOLLING=true
+
+EXPOSE 5173
+
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
